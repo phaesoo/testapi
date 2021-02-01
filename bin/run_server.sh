@@ -7,4 +7,4 @@ cd ..
 
 # build & run
 docker build --rm -t testapi .
-docker run  -p 8080:8080 testapi
+docker run  -d -p 8080:8080 testapi
