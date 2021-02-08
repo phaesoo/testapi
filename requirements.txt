@@ -5,8 +5,10 @@ astroid==2.4.2
 attrs==19.3.0
 autopep8==1.5.3
 billiard==3.6.3.0
+cffi==1.14.4
 cfgv==3.1.0
 click==7.1.2
+cryptography==3.2.1
 distlib==0.3.1
 filelock==3.0.12
 flake8==3.8.3
@@ -30,7 +32,9 @@ pluggy==0.13.1
 pre-commit==2.6.0
 py==1.10.0
 pycodestyle==2.6.0
+pycparser==2.20
 pyflakes==2.2.0
+PyJWT==2.0.1
 pylint==2.5.3
 pylint-django==2.2.0
 pylint-plugin-utils==0.6
