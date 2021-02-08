@@ -16,7 +16,6 @@ def client():
 
     db_fd, app.config["DATABASE"] = tempfile.mkstemp()
     app.config["TESTING"] = True
-    print(app.url_map)
 
     with app.test_client() as client:
         # with app.app_context():

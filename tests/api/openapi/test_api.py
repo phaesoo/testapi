@@ -1,3 +1,3 @@
 def test_markets(client):
     resp = client.get("/markets/all")
-    print(resp)
+    assert resp.status_code == 200

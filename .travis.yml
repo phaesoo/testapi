@@ -1,0 +1,9 @@
+language: python
+python: 
+  - 3.6  # travis-ci default
+#  - 3.8 # development version
+install:
+  - pip install -r requirements.txt
+  - pip install -e .
+cache: pip
+script: make test
