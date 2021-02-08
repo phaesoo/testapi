@@ -1,7 +1,7 @@
 # flake8: noqa
 import os
+import json
 import tempfile
-
 import pytest
 
 import sys
@@ -25,3 +25,10 @@ def client():
 
     os.close(db_fd)
     os.unlink(app.config['DATABASE'])
+
+
+def parse_body(resp):
+    return json.loads(resp.data.decode("utf-8"))
+
+# register custom function
+sys.modules['pytest'].parse_body = parse_body

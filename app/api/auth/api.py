@@ -54,13 +54,16 @@ class Me(Resource):
 class Verify(Resource):
     @jwt_authenticate()
     def get(self, **kwargs):
-        return resp.ok()
+        return resp.ok(msg="Token has been verified.")
 
 
 @ns.route("/refresh")
 class Refresh(Resource):
     @jwt_authenticate()
     def get(self, **kwargs):
-        return resp.ok({
-            "access_token": encrypt_jwt(kwargs["jwt_username"])
-        })
+        return resp.ok(
+            {
+                "access_token": encrypt_jwt(kwargs["jwt_username"])
+            },
+            msg="Token has been refreshed."
+        )
