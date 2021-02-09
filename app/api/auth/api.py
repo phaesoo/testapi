@@ -34,7 +34,7 @@ class Login(Resource):
 
         token = encrypt_jwt(user.username)
         return resp.ok({
-            "access_token": token
+            "access_key": token
         })
 
 
@@ -63,7 +63,7 @@ class Refresh(Resource):
     def get(self, **kwargs):
         return resp.ok(
             {
-                "access_token": encrypt_jwt(kwargs["jwt_username"])
+                "access_key": encrypt_jwt(kwargs["jwt_username"])
             },
             msg="Token has been refreshed."
         )

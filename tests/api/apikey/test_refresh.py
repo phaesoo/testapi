@@ -11,17 +11,18 @@ def _login(client):
     )
     assert resp.status_code == 200
 
-    return pytest.parse_body(resp)["access_token"]
+    return pytest.parse_body(resp)["access_key"]
 
 
-def test_me_returns_200(client):
-    access_token = _login(client)
+def test_verify_returns_200(client):
+    access_key = _login(client)
     resp = client.get(
-        "/auth/me",
-        headers={"Authorization": access_token}
+        "/auth/refresh",
+        headers={"Authorization": access_key}
     )
     assert resp.status_code == 200
 
     data = pytest.parse_body(resp)
-    assert data["username"] == _USERNAME
-    assert data["is_admin"] is False
+    refreshed_token = data["access_key"]
+
+    assert access_key != refreshed_token
