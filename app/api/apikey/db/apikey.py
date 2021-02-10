@@ -32,3 +32,4 @@ def add_apikey(
 
 # add mock apikey
 add_apikey("123", "456", uuid4())
+add_apikey("789", "012", uuid4())
