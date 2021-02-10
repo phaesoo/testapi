@@ -1,34 +1,29 @@
-from typing import Dict
-from uuid import UUID, uuid4
+from typing import Dict, List
 
 
-class APIKey:
+class Permission:
     _id = 0
 
     def __init__(
         self,
-        access_key: str,
-        secret_key: str,
-        user_uuid: UUID,
+        apikey_id: int,
+        blacklist_paths: List[str],
     ) -> None:
-        self.id = APIKey._id
-        self.access_key = access_key
-        self.secret_key = secret_key
-        self.user_uuid = str(user_uuid)
-        APIKey._id += 1
+        self.apikey_id = apikey_id
+        self.blacklist_paths = blacklist_paths
 
 
-# mock database table for apikey
-APIKEY_TABLE: Dict[str, APIKey] = {}
+# mock database table for permission
+PERM_TABLE: Dict[int, Permission] = {}
 
 
-def add_apikey(
-    access_key: str,
-    secret_key: str,
-    user_uuid: UUID,
+def add_permission(
+    apikey_id: int,
+    blacklist_paths: List[str] = [],
 ):
-    APIKEY_TABLE[access_key] = APIKey(access_key, secret_key, user_uuid)
+    PERM_TABLE[apikey_id] = Permission(apikey_id, blacklist_paths)
 
 
-# add mock apikey
-add_apikey("123", "456", uuid4())
+# add mock data
+add_permission(0)
+add_permission(1, ["/markets/all"])

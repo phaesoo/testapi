@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 import jwt
@@ -9,6 +10,7 @@ from flask_restx import (
 
 from api import response as resp
 from api.apikey.db import APIKEY_TABLE
+from api.apikey.db.permission import PERM_TABLE
 from api.restx import api
 
 logger = logging.getLogger(__name__)
@@ -18,7 +20,6 @@ ns = api.namespace("apikey", description="Endpoints for api key service")
 parser = reqparse.RequestParser()
 parser.add_argument("path", required=True)
 parser.add_argument("raw_query", required=True)
-
 
 # @ns.route("/issue")
 # class Issue(Resource):
@@ -41,16 +42,16 @@ parser.add_argument("raw_query", required=True)
 #         })
 
 
+def sha512(s: str) -> str:
+    return hashlib.sha512(s.encode()).hexdigest()
+
+
 @ns.route("/verify")
 class Verify(Resource):
     def _check_payload(self, payload: dict, query_exists: bool):
         for k in ["access_key", "nonce"]:
             if k not in payload:
                 raise ValueError("Required field not exists in payload: {}".format(k))
-
-        if query_exists:
-            if "query_hash" not in payload:
-                raise ValueError("Required field not exists in payload: query_hash")
 
     def post(self, **kwargs):
         try:
@@ -81,6 +82,11 @@ class Verify(Resource):
             print("Error while checking payload", e)
             return resp.unauthorized(str(e))
 
+        query_hash = payload.get("query_hash")
+        if query_hash:
+            hashed = sha512(parsed.raw_query)
+            print(query_hash, hashed)
+
         access_key = payload["access_key"]
 
         # Get apikey object by access_key
@@ -88,6 +94,13 @@ class Verify(Resource):
         if apikey is None:
             print("access_key not found: {}".format(access_key))
             return resp.unauthorized()
+
+        permission = PERM_TABLE.get(apikey.id)
+        if permission:
+            if parsed.path in permission.blacklist_paths:
+                return resp.bad_request("APIKey({}) has no permission for path: {}".format(apikey.id, parsed.path))
+        else:
+            print("[ERROR] There is no permission for APIKey: {}".format(apikey.id))
 
         # Validate with secret_key from db
         try:
