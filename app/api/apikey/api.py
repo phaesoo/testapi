@@ -98,6 +98,7 @@ class Verify(Resource):
         permission = PERM_TABLE.get(apikey.id)
         if permission:
             if parsed.path in permission.blacklist_paths:
+                print("Try to use blacklist path: {}, {}".format(apikey.id, parsed.path))
                 return resp.bad_request("APIKey({}) has no permission for path: {}".format(apikey.id, parsed.path))
         else:
             print("[ERROR] There is no permission for APIKey: {}".format(apikey.id))

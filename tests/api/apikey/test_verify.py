@@ -51,3 +51,13 @@ def test_verify_returns_401_with_invalid_token_prefix(client):
         json=_DUMMY_BODY,
     )
     assert res.status_code == 401
+
+
+def test_verify_returns_404_with_blacklist_path(client):
+    payload = {"access_key": "789", "nonce": str(uuid4())}
+    res = client.post(
+        "/apikey/verify",
+        headers=_generate_header(payload),
+        json=_DUMMY_BODY,
+    )
+    assert res.status_code == 400
