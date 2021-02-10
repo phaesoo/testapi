@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 ns = api.namespace("apikey", description="Endpoints for api key service")
 
 parser = reqparse.RequestParser()
-parser.add_argument("username", required=True)
-parser.add_argument("password", required=True)
+parser.add_argument("path", required=True)
+parser.add_argument("raw_query", required=True)
 
 
 # @ns.route("/issue")
@@ -53,6 +53,13 @@ class Verify(Resource):
                 raise ValueError("Required field not exists in payload: query_hash")
 
     def post(self, **kwargs):
+        try:
+            parsed = parser.parse_args()
+        except Exception:
+            return resp.error("Invalid request arguments")
+
+        print(parsed.path, parsed.raw_query)
+
         token = request.headers.get("Authorization")
         if token is None:
             return resp.unauthorized()
