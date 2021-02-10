@@ -1,23 +1,36 @@
-import pytest
+from uuid import uuid4
 
-_USERNAME = "test"
-_PASSWORD = "testpw"
+import jwt
+
+_ACCESS_KEY = "123"
+_SECRET_KEY = "456"
 
 
-def _login(client):
-    resp = client.post(
-        "/auth/login",
-        data={"username": _USERNAME, "password": _PASSWORD},
-    )
-    assert resp.status_code == 200
-
-    return pytest.parse_body(resp)["access_key"]
+def _generate_header(payload: dict, prefix: str = "Bearer", secret_key: str = _SECRET_KEY):
+    jwt_token = jwt.encode(payload, secret_key, algorithm="HS256")
+    authorize_token = '{} {}'.format(prefix, jwt_token)
+    return {"Authorization": authorize_token}
 
 
 def test_verify_returns_200(client):
-    access_key = _login(client)
-    resp = client.get(
-        "/auth/verify",
-        headers={"Authorization": access_key}
-    )
-    assert resp.status_code == 200
+    payload = {"access_key": _ACCESS_KEY, "nonce": str(uuid4())}
+    res = client.post("/apikey/verify", headers=_generate_header(payload))
+    assert res.status_code == 200
+
+
+def test_verify_returns_401_without_nonce(client):
+    payload = {"access_key": _ACCESS_KEY}
+    res = client.post("/apikey/verify", headers=_generate_header(payload))
+    assert res.status_code == 401
+
+
+def test_verify_returns_401_with_invalid_secret_key(client):
+    payload = {"access_key": _ACCESS_KEY, "nonce": str(uuid4())}
+    res = client.post("/apikey/verify", headers=_generate_header(payload, secret_key="789"))
+    assert res.status_code == 401
+
+
+def test_verify_returns_401_with_invalid_token_prefix(client):
+    payload = {"access_key": _ACCESS_KEY, "nonce": str(uuid4())}
+    res = client.post("/apikey/verify", headers=_generate_header(payload, prefix="Basic"))
+    assert res.status_code == 401
