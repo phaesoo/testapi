@@ -1,6 +1,6 @@
 _VALID_TOKEN = "token-1"
 _INVALID_TOKEN = "token-2"
-_DUMMY_BODY = {"path": "/markets/all", "raw_query": ""}
+_DUMMY_BODY = {"path": "/private", "raw_query": ""}
 
 _PATH = "/apikey-simple/verify"
 
@@ -8,6 +8,16 @@ _PATH = "/apikey-simple/verify"
 def _generate_header(token: str):
     authorize_token = '{} {}'.format("Bearer", token)
     return {"Authorization": authorize_token}
+
+
+def test_verify_returns_200_with_public_path(client):
+    body = _DUMMY_BODY.copy()
+    body["path"] = "/public"
+    res = client.post(
+        _PATH,
+        json=body,
+    )
+    assert res.status_code == 200
 
 
 def test_verify_returns_200(client):

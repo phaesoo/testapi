@@ -22,7 +22,8 @@ parser.add_argument("raw_query", required=True)
 _users = {
     "token-1": "user-1",
 }
-_whitelists = ["/markets/all"]
+_private_paths = ["/private"]
+_public_paths = ["/public"]
 
 
 @ns.route("/verify")
@@ -32,6 +33,13 @@ class Verify(Resource):
             parsed = parser.parse_args()
         except Exception:
             return resp.error("Invalid request arguments")
+
+        # OK if requested url path is in public path
+        if parsed.path in _public_paths:
+            return resp.ok(
+                {"userUuid": "None"},
+                msg="Verified",
+            )
 
         raw_token = request.headers.get("Authorization")
         if raw_token is None:
@@ -47,8 +55,8 @@ class Verify(Resource):
         if user_uuid is None:
             return resp.unauthorized("Unknown user")
 
-        # Check whether requested url path is in th whitelist or not
-        if parsed.path not in _whitelists:
+        # Check whether requested url path is in private path
+        if parsed.path not in _private_paths:
             return resp.unauthorized("User has no permission on the path")
 
         return resp.ok(
