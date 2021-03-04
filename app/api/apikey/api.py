@@ -21,26 +21,6 @@ parser = reqparse.RequestParser()
 parser.add_argument("path", required=True)
 parser.add_argument("raw_query", required=True)
 
-# @ns.route("/issue")
-# class Issue(Resource):
-#     def post(self):
-#         try:
-#             parsed = parser.parse_args()
-#         except Exception:
-#             return resp.invalid_param_error(
-#                 "username, password must be specified",
-#             )
-
-#         # username and password check
-#         user = AUTH_USERS.get(parsed.username)
-#         if user is None or not user.check_password(parsed.password):
-#             return resp.bad_request("Invalid username or password")
-
-#         token = encrypt_jwt(user.username)
-#         return resp.ok({
-#             "access_key": token
-#         })
-
 
 def sha512(s: str) -> str:
     return hashlib.sha512(s.encode()).hexdigest()

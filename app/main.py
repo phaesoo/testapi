@@ -4,6 +4,7 @@ from flask import (
 )
 
 from api.apikey.api import ns as ns_apikey
+from api.apikey_simple.api import ns as ns_apikey_simple
 from api.auth.api import ns as ns_auth
 from api.openapi.api import ns as ns_openapi
 from api.restx import api
@@ -22,6 +23,7 @@ def create_app():
     api.add_namespace(ns_openapi)
     api.add_namespace(ns_auth)
     api.add_namespace(ns_apikey)
+    api.add_namespace(ns_apikey_simple)
 
     app.register_blueprint(blueprint)
 
