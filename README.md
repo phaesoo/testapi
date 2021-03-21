@@ -15,3 +15,8 @@ $ docker run --rm -it --name testapi -p 80:8080 phaesoo/testapi  # run
 ```bash
 $ kustomize apply -k k8s
 ```
+
+## Run test
+```bash
+$ make test
+```
