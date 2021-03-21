@@ -1,3 +1,11 @@
+#
+# TestAPI
+#
+# build:
+#   docker build --force-rm -t phaesoo/testapi .
+# run:
+#   docker run --rm -it --name testapi -p 80:8080 phaesoo/testapi
+
 FROM tiangolo/uwsgi-nginx-flask:python3.8
 
 COPY ./app /app
